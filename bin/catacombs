@@ -30,7 +30,7 @@ def help():
     print "Available commands:"
     print "  run        - launch the server"
     print "  add        - add a list of ebooks to the db"
-    print "  add-peers  - add a list of ebooks to the db"
+    print "  add-peers  - add a list of peers to the db"
     print "  help       - print this and exist"
     print
 
