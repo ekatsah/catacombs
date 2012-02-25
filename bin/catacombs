@@ -2,6 +2,7 @@
 
 import os
 import sys
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from os.path import abspath, split
 from urllib import urlopen
 from os.path import exists
@@ -13,14 +14,12 @@ except ImportError:
     sys.path.append("..")
     from catacombs import dblite
 
-def help():
-    print "Available commands:"
-    print "  add        - add a list of ebooks to the db"
-    print "  add-peers  - add a list of peers to the db"
-    print "  help       - print this and exist"
-    print
+help_msg = '''Available commands:
+  add_book  - add a list of ebooks to the db
+  add_peer  - add a list of peers to the db'''
 
-def add_book(*books):
+def add_book(books):
+    print str(books)
     if not books:
         print "give me at least one ebook name"
         sys.exit(1)
@@ -32,7 +31,7 @@ def add_book(*books):
         book = split(book)[-1]
         dblite.add_a_book(book_path, book)
 
-def add_peers(*peers):
+def add_peer(peers):
     if not peers:
         print "give me at least one url to a peers"
         sys.exit(1)
@@ -45,17 +44,13 @@ def add_peers(*peers):
             dblite.add_a_peer(peer, name)
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        help()
-        sys.exit(0)
-    elif sys.argv[1] == "help":
-        help()
-    elif sys.argv[1] == "add":
-        add_book(*sys.argv[2:])
-    elif sys.argv[1] == "add-peers":
-        add_peers(*sys.argv[2:])
-    else:
-        print "Error: invalid command '%s'" % sys.argv[1]
-        print
-        help()
-        sys.exit(1)
+    parser = ArgumentParser(description='Catacomb main manager.',
+                            formatter_class=RawDescriptionHelpFormatter,
+                            epilog=help_msg)
+    parser.add_argument('command', metavar='command', choices=["add_book", "add_peer"], type=str, nargs=1, help='command to be executed')
+    parser.add_argument('params', metavar='params', type=str, nargs='+', help='params concerned by command')
+    args = parser.parse_args()
+    try:
+        globals()[args.command[0]](args.params)
+    except KeyError:
+        print "Wrong command"
