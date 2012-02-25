@@ -8,11 +8,11 @@ from os.path import exists
 from json import loads
 
 try:
-    from catacombs import db
+    from catacombs import dblite
     from catacombs import urls
 except ImportError:
     sys.path.append("..")
-    from catacombs import db
+    from catacombs import dblite
     from catacombs import urls
 
 def run():
@@ -44,7 +44,7 @@ def add_book(*books):
             print "Error: '%s' doesn't not exists" % book_path
             return
         book = split(book)[-1]
-        db.add_a_book(book_path, book)
+        dblite.add_a_book(book_path, book)
 
 def add_peers(*peers):
     if not peers:
@@ -56,7 +56,7 @@ def add_peers(*peers):
         except IOError:
             print "error, can't connect to %s" % peer
         else:
-            db.add_a_peer(peer, name)
+            dblite.add_a_peer(peer, name)
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:

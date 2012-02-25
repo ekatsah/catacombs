@@ -2,7 +2,7 @@
 
 import selector
 from json import dumps
-import db
+import dblite
 import os
 import socket
 from os.path import getsize
@@ -29,12 +29,14 @@ def home(environ):
 
 @request
 def books(environ):
-    return dumps(db.get_books(), indent=4)
+    print("gotach")
+    print str(dblite.get_books())
+    return dumps(dblite.get_books(), indent=4)
 
 @request
 def info_on_a_book(environ):
     id = environ['selector.vars']['id']
-    return dumps(db.get_a_book(id), indent=4)
+    return dumps(dblite.get_a_book(id), indent=4)
 
 @request
 def about(environ):
@@ -42,11 +44,11 @@ def about(environ):
 
 @request
 def list_peers(environ):
-    return dumps(db.get_peers(), indent=4)
+    return dumps(dblite.get_peers(), indent=4)
 
 def get_on_a_book(environ, start_response):
     id = environ['selector.vars']['id']
-    book = db.get_a_book(id, remove_path=False)
+    book = dblite.get_a_book(id, remove_path=False)
     content = open(book["path"], "r").read() if environ['REQUEST_METHOD'] == 'GET' else ""
     return render(start_response, content, [('Content-Type', 'application/pdf'),
                                             ('Content-Disposition', 'attachment; filename=%s' % book["name"].encode("Utf-8")),
