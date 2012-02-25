@@ -9,26 +9,12 @@ from json import loads
 
 try:
     from catacombs import dblite
-    from catacombs import urls
 except ImportError:
     sys.path.append("..")
     from catacombs import dblite
-    from catacombs import urls
-
-def run():
-    if os.environ.get("REQUEST_METHOD", ""):
-        from wsgiref.handlers import BaseCGIHandler
-        BaseCGIHandler(sys.stdin, sys.stdout, sys.stderr, os.environ).run(urls.urls)
-    else:
-        from wsgiref.simple_server import WSGIServer, WSGIRequestHandler
-        httpd = WSGIServer(('', 4242), WSGIRequestHandler)
-        httpd.set_app(urls.urls)
-        print "Serving HTTP on %s port %s ..." % httpd.socket.getsockname()
-        httpd.serve_forever()
 
 def help():
     print "Available commands:"
-    print "  run        - launch the server"
     print "  add        - add a list of ebooks to the db"
     print "  add-peers  - add a list of peers to the db"
     print "  help       - print this and exist"
@@ -62,11 +48,6 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         help()
         sys.exit(0)
-    if sys.argv[1] == "run":
-        try:
-            run()
-        except KeyboardInterrupt:
-            print "end"
     elif sys.argv[1] == "help":
         help()
     elif sys.argv[1] == "add":
