@@ -47,8 +47,9 @@ def add_a_book(book_path, file_name):
     file_hash = md5Checksum(book_path)
     cursor = connect.execute('select * from books where hash=?', (file_hash,))
     if cursor.rowcount == 1:
-        print "Error: file '%s' is already in the db with path '%s'" % (book_path, cursor[0][2])
-        if book_path != cursor[0][2]:
+        row = cursor.fetchone()
+        print "Error: file '%s' is already in the db with path '%s'" % (book_path, row[2])
+        if book_path != row[2]:
             print "Updating file path with new path"
             cursor.execute('update books set path=? where hash=?', 
                            (book_path, file_hash))
